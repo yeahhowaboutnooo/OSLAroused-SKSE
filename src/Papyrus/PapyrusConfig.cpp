@@ -41,8 +41,15 @@ void PapyrusConfig::SetViewingNudeBaseline(RE::StaticFunctionTag*, float newVal)
 	Settings::GetSingleton()->SetNudeViewingBaseline(newVal);
 }
 
-void PapyrusConfig::SetEroticArmorBaseline(RE::StaticFunctionTag*, float newVal, RE::BGSKeyword* keyword)
+void PapyrusConfig::SetEroticArmorBaseline(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, float newVal, RE::BGSKeyword* keyword)
 {
+	if (!keyword) {
+		std::string message = fmt::format("{} v{}: {} was called with invalid arguments!", Plugin::NAME, Plugin::VERSION.string(), __FUNCTION__);
+		logger::error("{}", message);
+		RE::DebugNotification(message.c_str());
+		a_vm->TraceStack(message.c_str(), a_stackID, RE::BSScript::ErrorLogger::Severity::kError);
+		return;
+	}
 	Settings::GetSingleton()->SetEroticArmorBaseline(newVal, keyword);
 }
 

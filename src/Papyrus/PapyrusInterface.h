@@ -3,34 +3,37 @@
 
 namespace PapyrusInterface
 {
-	float GetArousal(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	float GetArousalNoSideEffects(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	std::vector<float> GetArousalMultiple(RE::StaticFunctionTag* base, RE::reference_array<RE::Actor*> actorRefs);
+	using VM = RE::BSScript::Internal::VirtualMachine;
+	using StackID = RE::VMStackID;
 
-	float SetArousal(RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
-	void SetArousalMultiple(RE::StaticFunctionTag* base, RE::reference_array<RE::Actor*> actorRefs, float value);
+	float GetArousal(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	float GetArousalNoSideEffects(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	std::vector<float> GetArousalMultiple(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::reference_array<RE::Actor*> actorRefs);
 
-	float ModifyArousal(RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
-	void ModifyArousalMultiple(RE::StaticFunctionTag* base, RE::reference_array<RE::Actor*> actorRefs, float value);
+	float SetArousal(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
+	void SetArousalMultiple(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::reference_array<RE::Actor*> actorRefs, float value);
 
-	float GetArousalMultiplier(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	float SetArousalMultiplier(RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
-	float ModifyArousalMultiplier(RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
+	float ModifyArousal(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
+	void ModifyArousalMultiple(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::reference_array<RE::Actor*> actorRefs, float value);
 
-	float GetArousalBaseline(RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	float GetArousalMultiplier(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	float SetArousalMultiplier(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
+	float ModifyArousalMultiplier(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef, float value);
 
-	float GetLibido(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	float SetLibido(RE::StaticFunctionTag* base, RE::Actor* actorRef, float newVal);
+	float GetArousalBaseline(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+
+	float GetLibido(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	float SetLibido(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef, float newVal);
 
 	
-	float GetDaysSinceLastOrgasm(RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	float GetDaysSinceLastOrgasm(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
 
-	bool IsNaked(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	bool IsViewingNaked(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	bool IsInScene(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	bool IsViewingScene(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	bool IsWearingEroticArmor(RE::StaticFunctionTag* base, RE::Actor* actorRef);
-	float WornDeviceBaselineGain(RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	bool IsNaked(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	bool IsViewingNaked(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	bool IsInScene(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	bool IsViewingScene(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	bool IsWearingEroticArmor(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
+	float WornDeviceBaselineGain(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, RE::Actor* actorRef);
 
 
 	bool RegisterFunctions(RE::BSScript::IVirtualMachine* vm);

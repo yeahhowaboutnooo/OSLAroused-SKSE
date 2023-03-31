@@ -2,6 +2,9 @@
 
 namespace PapyrusConfig
 {
+	using VM = RE::BSScript::Internal::VirtualMachine;
+	using StackID = RE::VMStackID;
+
 	//OSLAroused Settings
 	void SetMinLibidoValue(RE::StaticFunctionTag* base, bool bPlayerVal, float newVal);
 	void SetArousalChangeRate(RE::StaticFunctionTag* base, float newVal);
@@ -13,7 +16,7 @@ namespace PapyrusConfig
 	void SetBeingNudeBaseline(RE::StaticFunctionTag* base, float newVal);
 	void SetViewingNudeBaseline(RE::StaticFunctionTag* base, float newVal);
 
-	void SetEroticArmorBaseline(RE::StaticFunctionTag* base, float newVal, RE::BGSKeyword* keyword);
+	void SetEroticArmorBaseline(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag* base, float newVal, RE::BGSKeyword* keyword);
 
 	void SetDeviceTypesBaseline1(RE::StaticFunctionTag* base, float belt, float collar, float legCuffs, float armCuffs, float bra, float gag, float p1, float p2, float blindfold, float harness);
 	void SetDeviceTypesBaseline2(RE::StaticFunctionTag* base, float plugVag, float plugAnal, float corset, float boots, float gloves, float hood, float suit, float heavyBondage, float bondageMittens);

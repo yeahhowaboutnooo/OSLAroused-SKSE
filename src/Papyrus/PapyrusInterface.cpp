@@ -6,90 +6,154 @@
 #include "Utilities/Utils.h"
 #include <Settings.h>
 #include <Integrations/DevicesIntegration.h>
-
-float PapyrusInterface::GetArousal(RE::StaticFunctionTag*, RE::Actor* actorRef)
+static void logInvalidArgsVerbose(RE::BSScript::Internal::VirtualMachine* a_vm, RE::VMStackID a_stackID, const char* fnName)
 {
+	std::string message = fmt::format("{} v{}: {} was called with invalid arguments!", Plugin::NAME, Plugin::VERSION.string(), fnName);
+	logger::error("{}", message);
+	RE::DebugNotification(message.c_str());
+	a_vm->TraceStack(message.c_str(), a_stackID, RE::BSScript::ErrorLogger::Severity::kError);
+}
+
+float PapyrusInterface::GetArousal(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
+{
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return ArousalManager::GetArousal(actorRef);
 }
 
-std::vector<float> PapyrusInterface::GetArousalMultiple(RE::StaticFunctionTag*, RE::reference_array<RE::Actor*> actorRefs)
+std::vector<float> PapyrusInterface::GetArousalMultiple(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::reference_array<RE::Actor*> actorRefs)
 {
 	std::vector<float> results;
 
 	for (const auto actorRef : actorRefs) {
+		if (!actorRef) {
+			logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+			results.push_back(0);
+			continue;
+		}
 		results.push_back(ArousalManager::GetArousal(actorRef));
 	}
 
 	return results;
 }
 
-float PapyrusInterface::GetArousalNoSideEffects(RE::StaticFunctionTag*, RE::Actor* actorRef)
+float PapyrusInterface::GetArousalNoSideEffects(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return ArousalManager::GetArousal(actorRef, false);
 }
 
-float PapyrusInterface::SetArousal(RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
+float PapyrusInterface::SetArousal(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return ArousalManager::SetArousal(actorRef, value);
 }
 
-void PapyrusInterface::SetArousalMultiple(RE::StaticFunctionTag*, RE::reference_array<RE::Actor*> actorRefs, float value)
+void PapyrusInterface::SetArousalMultiple(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::reference_array<RE::Actor*> actorRefs, float value)
 {
 	for (const auto actorRef : actorRefs) {
+		if (!actorRef) {
+			logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+			continue;
+		}
 		ArousalManager::SetArousal(actorRef, value);
 	}
 }
 
-float PapyrusInterface::ModifyArousal(RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
+float PapyrusInterface::ModifyArousal(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return ArousalManager::ModifyArousal(actorRef, value);
 }
 
-void PapyrusInterface::ModifyArousalMultiple(RE::StaticFunctionTag*, RE::reference_array<RE::Actor*> actorRefs, float value)
+void PapyrusInterface::ModifyArousalMultiple(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::reference_array<RE::Actor*> actorRefs, float value)
 {
 	for (const auto actorRef : actorRefs) {
+		if (!actorRef) {
+			logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+			continue;
+		}
 		ArousalManager::ModifyArousal(actorRef, value);
 	}
 }
 
-float PapyrusInterface::GetArousalMultiplier(RE::StaticFunctionTag*, RE::Actor* actorRef)
+float PapyrusInterface::GetArousalMultiplier(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return PersistedData::ArousalMultiplierData::GetSingleton()->GetData(actorRef->formID, 1.f);
 }
 
-float PapyrusInterface::SetArousalMultiplier(RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
+float PapyrusInterface::SetArousalMultiplier(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	value = std::clamp(value, 0.0f, 100.f);
 
 	PersistedData::ArousalMultiplierData::GetSingleton()->SetData(actorRef->formID, value);
 	return value;
 }
 
-float PapyrusInterface::ModifyArousalMultiplier(RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
+float PapyrusInterface::ModifyArousalMultiplier(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef, float value)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	float curMult = PersistedData::ArousalMultiplierData::GetSingleton()->GetData(actorRef->formID, 1.f);
 	float newVal = curMult + value;
 	PersistedData::ArousalMultiplierData::GetSingleton()->SetData(actorRef->formID, newVal);
 	return newVal;
 }
 
-float PapyrusInterface::GetArousalBaseline(RE::StaticFunctionTag*, RE::Actor* actorRef)
+float PapyrusInterface::GetArousalBaseline(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return LibidoManager::GetSingleton()->GetBaselineArousal(actorRef);
 }
 
-float PapyrusInterface::GetLibido(RE::StaticFunctionTag*, RE::Actor* actorRef)
+float PapyrusInterface::GetLibido(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return LibidoManager::GetSingleton()->GetBaseLibido(actorRef);
 }
 
-float PapyrusInterface::SetLibido(RE::StaticFunctionTag*, RE::Actor* actorRef, float newVal)
+float PapyrusInterface::SetLibido(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef, float newVal)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return LibidoManager::GetSingleton()->SetBaseLibido(actorRef, newVal);
 }
 
-float PapyrusInterface::GetDaysSinceLastOrgasm(RE::StaticFunctionTag*, RE::Actor* actorRef)
+float PapyrusInterface::GetDaysSinceLastOrgasm(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	float lastOrgasmTime = PersistedData::LastOrgasmTimeData::GetSingleton()->GetData(actorRef->formID, 0.f);
 	if (lastOrgasmTime < 0) {
 		lastOrgasmTime = 0;
@@ -98,28 +162,48 @@ float PapyrusInterface::GetDaysSinceLastOrgasm(RE::StaticFunctionTag*, RE::Actor
 	return RE::Calendar::GetSingleton()->GetCurrentGameTime() - lastOrgasmTime;
 }
 
-bool PapyrusInterface::IsNaked(RE::StaticFunctionTag*, RE::Actor* actorRef)
+bool PapyrusInterface::IsNaked(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return Utilities::Actor::IsNakedCached(actorRef);
 }
 
-bool PapyrusInterface::IsViewingNaked(RE::StaticFunctionTag*, RE::Actor* actorRef)
+bool PapyrusInterface::IsViewingNaked(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return Utilities::Actor::IsViewingNaked(actorRef);
 }
 
-bool PapyrusInterface::IsInScene(RE::StaticFunctionTag*, RE::Actor* actorRef)
+bool PapyrusInterface::IsInScene(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return Utilities::Actor::IsParticipatingInScene(actorRef);
 }
 
-bool PapyrusInterface::IsViewingScene(RE::StaticFunctionTag*, RE::Actor* actorRef)
+bool PapyrusInterface::IsViewingScene(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return Utilities::Actor::IsViewingScene(actorRef);
 }
 
-bool PapyrusInterface::IsWearingEroticArmor(RE::StaticFunctionTag*, RE::Actor* actorRef)
+bool PapyrusInterface::IsWearingEroticArmor(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	if (!Utilities::Actor::IsNakedCached(actorRef)) {
 		if (const auto eroticKeyword = Settings::GetSingleton()->GetEroticArmorKeyword()) {
 			const auto wornKeywords = Utilities::Actor::GetWornArmorKeywords(actorRef);
@@ -129,8 +213,12 @@ bool PapyrusInterface::IsWearingEroticArmor(RE::StaticFunctionTag*, RE::Actor* a
 	return false;
 }
 
-float PapyrusInterface::WornDeviceBaselineGain(RE::StaticFunctionTag*, RE::Actor* actorRef)
+float PapyrusInterface::WornDeviceBaselineGain(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
+	if (!actorRef) {
+		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		return 0;
+	}
 	return DevicesIntegration::GetSingleton()->GetArousalBaselineFromDevices(actorRef);
 }
 
