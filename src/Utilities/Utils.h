@@ -6,6 +6,7 @@
 
 namespace Utilities
 {
+	void logInvalidArgsVerbose(RE::BSScript::Internal::VirtualMachine* a_vm, RE::VMStackID a_stackID, const char* fnName);
 	inline float GenerateRandomFloat(float min, float max)
 	{
 		std::random_device rd;

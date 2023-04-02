@@ -1,6 +1,14 @@
 #include "PersistedData.h"
 #include "Utils.h"
 
+void Utilities::logInvalidArgsVerbose(RE::BSScript::Internal::VirtualMachine* a_vm, RE::VMStackID a_stackID, const char* fnName)
+{
+	std::string message = fmt::format("{} v{}: {} was called with invalid arguments!", Plugin::NAME, Plugin::VERSION.string(), fnName);
+	logger::error("{}", message);
+	RE::DebugNotification(message.c_str());
+	a_vm->TraceStack(message.c_str(), a_stackID, RE::BSScript::ErrorLogger::Severity::kError);
+}
+
 RE::FormID Utilities::Forms::ResolveFormId(uint32_t modIndex, RE::FormID rawFormId)
 {
 	if (modIndex < 0xFF) {

@@ -2,18 +2,11 @@
 #include "Utilities/Utils.h"
 #include "Integrations/DevicesIntegration.h"
 #include "Settings.h"
-static void logInvalidArgsVerbose(RE::BSScript::Internal::VirtualMachine* a_vm, RE::VMStackID a_stackID, const char* fnName)
-{
-	std::string message = fmt::format("{} v{}: {} was called with invalid arguments!", Plugin::NAME, Plugin::VERSION.string(), fnName);
-	logger::error("{}", message);
-	RE::DebugNotification(message.c_str());
-	a_vm->TraceStack(message.c_str(), a_stackID, RE::BSScript::ErrorLogger::Severity::kError);
-}
 
 std::vector<RE::TESForm*> PapyrusActor::GetAllEquippedArmor(VM* a_vm, StackID a_stackID, RE::StaticFunctionTag*, RE::Actor* actorRef)
 {
 	if (!actorRef) {
-		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		Utilities::logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
 		return std::vector<RE::TESForm*>(0);
 	}
 	return Utilities::Actor::GetWornArmor(actorRef);
@@ -24,7 +17,7 @@ std::vector<int> PapyrusActor::GetActiveDeviceTypeIds(VM* a_vm, StackID a_stackI
 	std::vector<int> deviceTypeIds;
 
 	if (!actorRef) {
-		logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
+		Utilities::logInvalidArgsVerbose(a_vm, a_stackID, __FUNCTION__);
 		return deviceTypeIds;
 	}
 
